@@ -1,0 +1,45 @@
+{
+  "name": "portofolioweb",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.3",
+    "@mui/material": "^5.14.4",
+    "@mui/styled-engine-sc": "^5.12.0",
+    "aos": "^2.3.4",
+    "express": "^4.18.2",
+    "flowbite": "^1.8.1",
+    "flowbite-react": "^0.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-parallax-tilt": "^1.7.158",
+    "react-simple-typewriter": "^5.0.1",
+    "react-swipeable-views": "^0.14.0",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
+    "styled-components": "^5.3.11",
+    "tilt.js": "^1.2.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.4.5"
+  }
+}

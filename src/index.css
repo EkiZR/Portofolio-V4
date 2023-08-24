@@ -1,0 +1,242 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+	font-family: 'Poppins', sans-serif !important;	
+	scroll-behavior: smooth;
+}
+
+body {
+}
+
+#root {
+	background: linear-gradient(to bottom right, #121212, #1a1a1a);
+}
+
+#ImgKomputer {
+	height: 35em;
+	width: auto;
+}
+
+/* Untuk Webkit Browsers */
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: black;
+	background: rgb(67, 66, 66);
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(31.6px);
+	-webkit-backdrop-filter: blur(11.6px);
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #ced4d7;
+	border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: #555;
+}
+
+/* Untuk Firefox Browsers */
+::-moz-scrollbar {
+	width: 10px;
+}
+
+::-moz-scrollbar-track {
+	background-color: black;
+}
+
+::-moz-scrollbar-thumb {
+	background-color: #ced4d7;
+	border-radius: 5px;
+}
+
+::-moz-scrollbar-thumb:hover {
+	background-color: #555;
+}
+
+#Card {
+	background: linear-gradient(to right bottom ,#434343, #43434392);
+}
+
+#Tabs {
+	font-family: 'Poppins', sans-serif;	
+	
+}
+
+.card {
+	font-family: 'Poppins', sans-serif;	
+}
+
+#Navbar{
+	font-family: 'Poppins', sans-serif;	
+
+}
+
+
+#InfoAbout {
+	background: linear-gradient(to right bottom ,#1a1a1a, #121212);
+	box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+
+
+#DownloadSvg {
+	z-index: 999;
+}
+
+#ImgSertif {
+	width: 100%;
+	height: auto;
+}
+
+
+/* .cardSertif {
+	--hover-text: #1f2937;
+	--bg: #ffffff;
+	width: auto;
+	height: auto;
+	text-align: center;
+	font-size: 1em;
+	background: var(--bg);
+	border-radius: 5px;
+	position: relative;
+	overflow: hidden;
+	transition: .3s cubic-bezier(.6,.4,0,1), transform .15s ease;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 1em;
+  }
+  
+  .cardSertif > :not(span) {
+	transition: .3s cubic-bezier(.6,.4,0,1);
+  }
+  
+  .cardSertif > strong {
+	display: block;
+	font-size: 1.4rem;
+	letter-spacing: -.035em;
+  }
+  
+  .cardSertif span {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: var(--hover-text);
+	border-radius: 5px;
+	font-weight: bold;
+	top: 100%;
+	transition: all .3s cubic-bezier(.6,.4,0,1);
+  }
+  
+  .cardSertif:hover span {
+	cursor: pointer;
+	top: 0;
+	font-size: 2em;
+
+  }
+  
+  .cardSertif #ImgSertif:hover {
+  }
+  
+  .cardSertif:hover > div,
+  .cardSertif:hover > strong {
+	opacity: 0;
+	
+  }
+  
+  .cardSertif:hover > div,
+  .cardSertif:hover > strong,
+  .cardSertif:hover #ImgSertif {
+	filter: blur(2px);
+  } */
+  
+#CardIcon {
+	background: linear-gradient(to right bottom ,#434343, #43434392);
+	box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+
+#CardIcon:hover {
+	cursor: pointer;
+}
+
+
+#CardIcon img{
+	margin: 0 auto;
+	opacity: 85%;
+}
+
+#ImgAbout {
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+#ButtonHome {
+	font-family: inherit;
+	font-weight: 500;
+	font-size: 15px;
+	background: #ced4d7;
+	color: #121212;
+	padding: 0.7em 1em;
+	padding-left: 0.9em;
+	display: flex;
+	align-items: center;
+	border: none;
+	border-radius: 16px;
+	overflow: hidden;
+	transition: all 0.2s;
+  }
+  
+  #ButtonHome span {
+	display: block;
+	margin-left: 0.3em;
+	transition: all 0.3s ease-in-out;
+  }
+  
+  #ButtonHome svg {
+	display: block;
+	transform-origin: center center;
+	transition: transform 0.3s ease-in-out;
+  }
+  
+  #ButtonHome:hover .svg-wrapper {
+	animation: fly-1 0.6s ease-in-out infinite alternate;
+  }
+  
+  #ButtonHome:hover svg {
+	transform: translateX(1.2em) rotate(45deg) scale(1.1);
+  }
+  
+  #ButtonHome:hover span {
+	transform: translateX(5em);
+  }
+  
+  #ButtonHome:active {
+	transform: scale(0.95);
+  }
+  
+  @keyframes fly-1 {
+	from {
+	  transform: translateY(0.1em);
+	}
+  
+	to {
+	  transform: translateY(-0.1em);
+	}
+  }
+  
+#Contact {
+	background: url(Wave.svg)no-repeat;
+	background-position: bottom;
+}
