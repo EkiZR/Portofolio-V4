@@ -230,6 +230,6 @@ body {
 }
 
 #Contact {
-	background: url(Wave.svg) no-repeat;
+	background: url("/Wave.svg") no-repeat;
 	background-position: bottom;
 }
