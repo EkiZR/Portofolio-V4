@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react"
 import ButtonCV from "../Components/ButtonCV"
 import AOS from "aos"
 import "aos/dist/aos.css"
-import { db } from "../firebase" 
-import { collection, getDocs } from "firebase/firestore"
+import { db } from "../firebase" // Mengimpor objek db dari file firebase.js
+import { collection, getDocs } from "firebase/firestore" // Mengimpor modul yang benar
 
 const AboutMe = () => {
-	/* const [projectCount, setProjectCount] = useState(0)
+	const [projectCount, setProjectCount] = useState(0)
 	const [certificateCount, setCertificateCount] = useState(0)
 
 	useEffect(() => {
@@ -32,7 +32,7 @@ const AboutMe = () => {
 			.catch((error) => {
 				console.error("Error fetching certificates: ", error)
 			})
-	}, []) */
+	}, [])
 
 	return (
 		<>
@@ -87,13 +87,13 @@ const AboutMe = () => {
 							<div
 								class="w-auto h-[8em] flex flex-col justify-center items-center rounded-sm"
 								id="InfoAbout">
-								<b className="text-3xl text-[#ced4d7]">{/* {projectCount} */}+</b>
+								<b className="text-3xl text-[#ced4d7]">{projectCount}+</b>
 								<div className="text-center text-[#a6adba]">Project Created</div>
 							</div>
 							<div
 								class="w-auto h-[8em] flex flex-col justify-center items-center rounded-sm"
 								id="InfoAbout">
-								<b className="text-3xl text-[#ced4d7]">{/* {certificateCount} */}+</b>
+								<b className="text-3xl text-[#ced4d7]">{certificateCount}+</b>
 								<div className="text-center text-[#a6adba]">Certificate</div>
 							</div>
 						</div>
