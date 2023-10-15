@@ -17,6 +17,7 @@
     "@mui/styled-engine-sc": "^5.12.0",
     "aos": "^2.3.4",
     "express": "^4.18.2",
+    "firebase": "^10.5.0",
     "flowbite": "^1.8.1",
     "flowbite-react": "^0.5.0",
     "react": "^18.2.0",

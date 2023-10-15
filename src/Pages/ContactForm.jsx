@@ -1,36 +1,42 @@
 import SocialMedia from "../Components/SocialMedia"
-import React, { useEffect } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import React, { useEffect } from "react"
+import AOS from "aos"
+import "aos/dist/aos.css"
 
 const ContactForm = () => {
-
 	useEffect(() => {
-		AOS.init();
-		AOS.refresh();
-	  }, []);
+		AOS.init()
+		AOS.refresh()
+	}, [])
 
-	  
 	return (
 		<div className="relative" id="Contact">
 			<div className=" min-h-screen md:mt-20 mt-10 md:px-[10%] px-[6%]">
-				<h1 className="text-4xl font-bold mb-4 text-[#ced4d7]" data-aos="fade-up" data-aos-duration="600">Contact Me</h1>
+				<h1
+					className="text-4xl font-bold mb-4 text-[#ced4d7]"
+					data-aos="fade-up"
+					data-aos-duration="600">
+					Contact Me
+				</h1>
 				<div className="max-w-5xl">
 					<div className="flex flex-col md:flex-row ">
 						<div className="md:w-1/2 w-auto" data-aos="fade-up" data-aos-duration="1000">
-
-
 							<SocialMedia />
 						</div>
 						<div className="md:w-1/2 w-auto">
-							<div className="text-[#ced4d7] font-semibold md:mt-0 md:pl-1 mt-10 text-base mb-3 opacity-60" data-aos="fade-up" data-aos-duration="600">
+							<div
+								className="text-[#ced4d7] font-semibold md:mt-0 md:pl-1 mt-10 text-base mb-3 opacity-60"
+								data-aos="fade-up"
+								data-aos-duration="600">
 								Have something to discuss? Send me a message and let's talk.
 							</div>
-							
+
 							<form
 								action="https://formsubmit.co/ekizulfarrachman@gmail.com"
 								method="POST"
-								className=" md:p-1 p-0" data-aos="fade-up" data-aos-duration="1000">
+								className=" md:p-1 p-0"
+								data-aos="fade-up"
+								data-aos-duration="1000">
 								<div className="mb-6" data-aos="fade-up" data-aos-duration="600">
 									<label htmlFor="name" className="block text-[#ced4d7] font-semibold mb-2">
 										Name
@@ -73,25 +79,17 @@ const ContactForm = () => {
 								</div>
 								<input type="hidden" name="_captcha" value="false" />
 								<input type="hidden" name="_template" value="table" />
-								<button 
+								<button
 									type="submit"
 									className="text-center bg-[#ced4d7] text-[#212121] mb-20 font-semibold py-2 px-4 rounded-lg hover:bg-[#1f2937] hover:text-[#ced4d7] transition-all duration-200 ease-out">
 									Send
 								</button>
-
-
 							</form>
-
-							
 						</div>
 					</div>
 				</div>
 			</div>
-			
-			
 		</div>
-
-		
 	)
 }
 
