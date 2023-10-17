@@ -19,7 +19,7 @@ const Certificate = (props) => {
       <div className="">
         <img
           src={ImgSertif}
-          alt=""
+          alt="Img Sertif Eki"
           id="ImgSertif"
           onClick={handleOpen}
           className="cursor-pointer"
@@ -43,7 +43,7 @@ const Certificate = (props) => {
           >
             <CloseIcon sx={{ fontSize: 52 , position: "relative"}} />
           </IconButton>
-          <img src={ImgSertif} alt="" className="max-w-full max-h-full" />
+          <img src={ImgSertif} alt="Img Sertif Eki" className="max-w-full max-h-full" />
         </div>
       </Modal>
     </div>

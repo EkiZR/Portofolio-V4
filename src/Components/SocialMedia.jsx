@@ -68,7 +68,7 @@ export default function SocialMedia() {
 				<Tab
 					label={
 						<div className="flex gap-x-3 w-full">
-							<img src="/SocialMediaImg/instagram.svg" alt="" />
+							<img src="/SocialMediaImg/instagram.svg" alt="Instagram Eki" />
 							Instagram
 						</div>
 					}
@@ -83,7 +83,7 @@ export default function SocialMedia() {
 				<Tab
 					label={
 						<div className="flex gap-x-3 w-full">
-							<img src="/SocialMediaImg/tiktok.svg" alt="" />
+							<img src="/SocialMediaImg/tiktok.svg" alt="Tiktok Eki" />
 							Tiktok
 						</div>
 					}
@@ -98,7 +98,7 @@ export default function SocialMedia() {
 				<Tab
 					label={
 						<div className="flex gap-x-3 w-full">
-							<img src="/SocialMediaImg/youtube.svg" alt="" />
+							<img src="/SocialMediaImg/youtube.svg" alt="Youtube Eki" />
 							Youtube
 						</div>
 					}
@@ -113,7 +113,7 @@ export default function SocialMedia() {
 				<Tab
 					label={
 						<div className="flex gap-x-3 w-full">
-							<img src="/SocialMediaImg/linkedin.svg" alt="" />
+							<img src="/SocialMediaImg/linkedin.svg" alt="Linkedin Eki" />
 							Linkedin
 						</div>
 					}
@@ -128,7 +128,7 @@ export default function SocialMedia() {
       <Tab
 					label={
 						<div className="flex gap-x-3 w-full">
-							<img src="/SocialMediaImg/github.svg" alt="" />
+							<img src="/SocialMediaImg/github.svg" alt="Github Eki" />
 							Github
 						</div>
 					}
@@ -148,7 +148,7 @@ export default function SocialMedia() {
 					<a href="https://www.instagram.com/ekizr_/?hl=id">
 						<img
 							src="/SocialMediaImg/Instagram.jpg"
-							alt=""
+							alt="Instagram Eki"
 							className="object-contain h-auto w-[10rem] md:w-[14.3rem]  rounded-xl "
 						/>
 					</a>
@@ -157,7 +157,7 @@ export default function SocialMedia() {
 					<a href="https://www.tiktok.com/@eki_zulfar">
 						<img
 							src="/SocialMediaImg/tiktok.jpg"
-							alt=""
+							alt="Tiktok Eki"
 							className="object-contain h-auto w-[10rem] md:w-[14.3rem] rounded-xl"
 						/>
 					</a>
@@ -166,7 +166,7 @@ export default function SocialMedia() {
 					<a href="https://youtube.com/@eki_zulfar">
 						<img
 							src="/SocialMediaImg/youtube.jpg"
-							alt=""
+							alt="Youtube Eki"
 							className="object-contain h-auto w-[10rem] md:w-[14.3rem] rounded-xl"
 						/>
 					</a>
@@ -175,7 +175,7 @@ export default function SocialMedia() {
 					<a href="https://www.linkedin.com/in/ekizr/">
 						<img
 							src="/SocialMediaImg/linkedin.jpg"
-							alt=""
+							alt="Linkedin Eki"
 							className="object-contain h-auto w-[10rem] md:w-[14.3rem] rounded-xl"
 						/>
 					</a>
@@ -184,7 +184,7 @@ export default function SocialMedia() {
 					<a href="https://github.com/EkiZR">
 						<img
 							src="/SocialMediaImg/github.jpg"
-							alt=""
+							alt="Github Eki"
 							className="object-contain h-auto w-[10rem] md:w-[14.3rem] rounded-xl"
 						/>
 					</a>

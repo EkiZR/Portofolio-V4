@@ -49,7 +49,7 @@ const AboutMe = () => {
 						<div data-aos="fade-up" data-aos-duration="1000">
 							<img
 								src="/Photo.png"
-								alt=""
+								alt="Photo Siluet"
 								className="
                             w-[30rem] h-auto rounded-xl "
 								id="ImgAbout"
@@ -63,11 +63,11 @@ const AboutMe = () => {
 							className="text-[#a6adba] w-full text-justify text-xl mb-5 mt-5 md:mt-0"
 							data-aos="fade-up"
 							data-aos-duration="600">
-							Saya adalah seorang siswa yang menekuni di bidang Teknik Komputer Jaringan dengan
-							fokus pada pengembangan front-end web. Saya memiliki tekad yang kuat untuk terus
-							belajar dan mengasah keterampilan saya demi mencapai kesempurnaan, saya selalu
-							berusaha untuk menemukan solusi yang terbaik dalam setiap proyek yang saya kerjakan
-							dan memilki minat besar di bidang front end web.
+							Saya adalah Eki Zulfar Rachman, seorang siswa yang menekuni bidang Teknik Komputer
+							Jaringan dengan fokus pada pengembangan front-end web. Saya memiliki tekad yang kuat
+							untuk terus belajar dan mengasah keterampilan saya demi mencapai kesempurnaan. Selalu
+							berusaha untuk menemukan solusi terbaik dalam setiap proyek yang saya kerjakan dan
+							memiliki minat besar di bidang front-end web.
 						</p>
 
 						<div className="relative " data-aos="fade-up" data-aos-duration="800">

@@ -25,6 +25,7 @@
     "react-parallax-tilt": "^1.7.158",
     "react-simple-typewriter": "^5.0.1",
     "react-swipeable-views": "^0.14.0",
+    "react-tabs": "^6.0.2",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "styled-components": "^5.3.11",
