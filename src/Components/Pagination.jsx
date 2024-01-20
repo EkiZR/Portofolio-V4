@@ -1,4 +1,4 @@
-import React from "react";
+/* import React from "react";
 import { Box } from "@mui/material";
 
 function Pagination({ totalPages, currentPage, handlePageChange }) {
@@ -14,3 +14,4 @@ function Pagination({ totalPages, currentPage, handlePageChange }) {
 }
 
 export default Pagination;
+ */

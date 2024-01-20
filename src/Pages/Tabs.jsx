@@ -14,28 +14,7 @@ import Certificate from "../Components/Certificate";
 import PIcon from "../Components/CardIcon";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import { styled } from "@mui/system";
-
-const PaginationButton = styled("button")({
-  color: "rgba(255, 255, 255, 0.533)",
-  background: "transparent",
-  border: "none",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  "&:disabled": {
-    opacity: 0.5,
-    cursor: "not-allowed",
-  },
-});
-
-const PageNumber = styled("div")((props) => ({
-  margin: "0 0.5rem",
-  cursor: "pointer",
-  opacity: props.currentPage === props.page ? 1 : 0.5,
-}));
 
 function TabPanel(props) {
   useEffect(() => {
@@ -80,8 +59,8 @@ export default function FullWidthTabs() {
   const [value, setValue] = React.useState(0);
   const [projects, setProjects] = useState([]);
   const [certificates, setCertificates] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const [showAllProjects, setShowAllProjects] = useState(false);
+  const [showAllCertificates, setShowAllCertificates] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,19 +87,21 @@ export default function FullWidthTabs() {
     setValue(newValue);
   };
 
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+  const handleShowMoreProjects = () => {
+    setShowAllProjects(true);
   };
 
-  const handleNextPage = () => {
-    setCurrentPage(currentPage + 1);
+  const handleShowMoreCertificates = () => {
+    setShowAllCertificates(true);
   };
 
-  const handlePreviousPage = () => {
-    setCurrentPage(currentPage - 1);
+  const handleShowLessProjects = () => {
+    setShowAllProjects(false);
   };
 
-  const maxPage = Math.ceil(projects.length / itemsPerPage);
+  const handleShowLessCertificates = () => {
+    setShowAllCertificates(false);
+  };
 
   return (
     <div className="md:px-[10%]  md:mt-20 mt-10" id="Tabs" data-aos="fade-up" data-aos-duration="800">
@@ -175,38 +156,71 @@ export default function FullWidthTabs() {
           onChangeIndex={setValue}
         >
           <TabPanel value={value} index={0} dir={theme.direction}>
-            <div className="container mx-auto flex justify-center items-center overflow-hidden">
+            <div className="container mx-auto flex justify-center items-center overflow-hidden ">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {projects
-                  .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                  .map((project, index) => (
-                    <div key={index} data-aos="fade-up" data-aos-duration="1000">
-                      <CardProject Img={project.Img} Title={project.Title} Description={project.Description} Link={project.Link} />
-                    </div>
-                  ))}
+                {(showAllProjects ? projects : projects.slice(0, 6)).map((project, index) => (
+                  <div key={index} data-aos="fade-up" data-aos-duration="1000">
+                    <CardProject Img={project.Img} Title={project.Title} Description={project.Description} Link={project.Link} />
+                  </div>
+                ))}
               </div>
+             
             </div>
-        
+            {projects.length > 6 && (
+                <div className="mt-4 text-[#ced4d7] ">
+                  {showAllProjects ? (
+                    <button onClick={handleShowLessProjects} className="opacity-75 italic text-sm">
+                      See Less
+                    </button>
+                  ) : (
+                    <button onClick={handleShowMoreProjects} className="opacity-75 text-sm">
+                      See More
+                    </button>
+                  )}
+                </div>
+              )}
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-3 md:gap-5 gap-0">
-                {certificates.map((Sertifikat, index) => (
+              <div className="grid grid-cols-1 md:grid-cols-3 md:gap-5 gap-4">
+                {(showAllCertificates ? certificates : certificates.slice(0, 6)).map((Sertifikat, index) => (
                   <div key={index} data-aos="fade-up" data-aos-duration="1000">
                     <Certificate ImgSertif={Sertifikat.Img} />
                   </div>
                 ))}
               </div>
-            </div>
+              </div>
+              {certificates.length > 6 && (
+                <div className="mt-4 text-[#ced4d7]" >
+                  {showAllCertificates ? (
+                    <button onClick={handleShowLessCertificates} className="opacity-75 italic text-sm">
+                      See Less
+                    </button>
+                  ) : (
+                    <button onClick={handleShowMoreCertificates} className="opacity-75 text-sm">
+                      See More
+                    </button>
+                  )}
+                </div>
+              )}
+
+  
+          
           </TabPanel>
           <TabPanel value={value} index={2} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden">
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+                {/* Programming icon / tech stack  */}
                 <PIcon PIcon="html.svg" Language="HTML" />
                 <PIcon PIcon="css.svg" Language="CSS" />
                 <PIcon PIcon="javascript.svg" Language="JavaScript" />
                 <PIcon PIcon="tailwind.svg" Language="Tailwind CSS" />
                 <PIcon PIcon="reactjs.svg" Language="ReactJS" />
+                <PIcon PIcon="vite.svg" Language="Vite" />
+                <PIcon PIcon="nodejs.svg" Language="Node JS" />
+                <PIcon PIcon="bootstrap.svg" Language="Bootstrap" />
+                <PIcon PIcon="firebase.svg" Language="Firebase" />
+                <PIcon PIcon="MUI.svg" Language="Material UI" />
               </div>
             </div>
           </TabPanel>

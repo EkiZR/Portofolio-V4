@@ -43,9 +43,9 @@ const AboutMe = () => {
 					data-aos-duration="400">
 					ABOUT ME
 				</div>
-				<div className="flex flex-col md:flex-row ">
+				<div className="flex flex-col md:flex-row">
 					{/* Kolom Kiri */}
-					<div className=" md:w-1/2 flex justify-center items-center md:pr-10 pr-0 md:w-auto ">
+					<div className="flex justify-center items-center md:pr-10 pr-0 md:w-auto ">
 						<div data-aos="fade-up" data-aos-duration="1000">
 							<img
 								src="/Photo.png"
@@ -81,7 +81,7 @@ const AboutMe = () => {
 							<div
 								class="w-auto h-[8em] flex flex-col justify-center items-center rounded-sm"
 								id="InfoAbout">
-								<b className="text-3xl text-[#ced4d7]">1+</b>
+								<b className="text-3xl text-[#ced4d7]">3+</b>
 								<div className="text-center text-[#a6adba]">Years of Experience</div>
 							</div>
 							<div

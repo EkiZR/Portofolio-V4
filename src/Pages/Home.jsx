@@ -37,7 +37,7 @@ const Home = () => {
             </div>
 
             <br />
-            <div className="md:mt-10 mt-7" data-aos="fade-up" data-aos-duration="1200">
+            <div className="mt-5" data-aos="fade-up" data-aos-duration="1200">
               <Button />
             </div>
           </div>

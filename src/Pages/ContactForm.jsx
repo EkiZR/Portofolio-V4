@@ -48,7 +48,7 @@ const ContactForm = () => {
 										id="name"
 										autoComplete="off"
 										placeholder="Your Name"
-										className="w-full px-3 py-2 border h-14 w-auto  rounded-lg focus:outline-none focus:border-[#ced4d7] bg-transparent text-[#a6adba]"
+										className="w-full px-3 py-2 border h-14 rounded-lg focus:outline-none focus:border-[#ced4d7] bg-transparent text-[#a6adba]"
 									/>
 								</div>
 								<div className="mb-6" data-aos="fade-up" data-aos-duration="800">
@@ -62,7 +62,7 @@ const ContactForm = () => {
 										id="from"
 										placeholder="From"
 										autoComplete="off"
-										className="w-full px-3 py-2 border h-14 w-auto rounded-lg focus:outline-none focus:border-[#ced4d7] bg-transparent text-[#a6adba]"
+										className="w-full px-3 py-2 border h-14 rounded-lg focus:outline-none focus:border-[#ced4d7] bg-transparent text-[#a6adba]"
 									/>
 								</div>
 								<div className="mb-5" data-aos="fade-up" data-aos-duration="1000">
