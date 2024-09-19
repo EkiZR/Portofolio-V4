@@ -147,7 +147,7 @@ export default function SocialMedia() {
 				<TabPanel value={value} index={0}>
 					<a href="https://www.instagram.com/ekizr_/?hl=id">
 						<img
-							src="/SocialMediaImg/Instagram.jpg"
+							src="/SocialMediaImg/instagram.jpg"
 							alt="Instagram Eki"
 							className="object-contain h-auto w-[10rem] md:w-[14.3rem]  rounded-xl "
 						/>
