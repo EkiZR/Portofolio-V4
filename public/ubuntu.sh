@@ -31,19 +31,24 @@ validate_input() {
     return 0
 }
 
+export DEBIAN_FRONTEND=noninteractive
+
 # Update dan install paket
 apt-get update
 
-# Instalasi interaktif
+# Instalasi paket tanpa interaksi
 apt-get install -y \
     bind9 \
     apache2 \
-    mysql-server \
-    php \
-    phpmyadmin \
     apache2-utils \
     software-properties-common \
     net-tools
+
+# Aktifkan kembali interaksi untuk paket tertentu
+export DEBIAN_FRONTEND=dialog
+
+# Instalasi paket yang membutuhkan interaksi (misalnya, mysql-server dan phpmyadmin)
+apt-get install -y mysql-server php phpmyadmin
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
