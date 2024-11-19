@@ -31,7 +31,6 @@ validate_input() {
     return 0
 }
 
-export DEBIAN_FRONTEND=noninteractive
 
 # Update dan install paket
 apt-get update
@@ -44,11 +43,8 @@ apt-get install -y \
     software-properties-common \
     net-tools
 
-# Aktifkan kembali interaksi untuk paket tertentu
-export DEBIAN_FRONTEND=interactive
-
 # Instalasi paket yang membutuhkan interaksi (misalnya, mysql-server dan phpmyadmin)
-apt-get install mysql-server php phpmyadmin
+apt-get install mysql-server phpmyadmin
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
