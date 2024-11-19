@@ -31,6 +31,7 @@ validate_input() {
     return 0
 }
 
+export DEBIAN_FRONTEND=noninteractive
 
 # Update dan install paket
 apt-get update
@@ -41,7 +42,6 @@ apt-get install -y \
     apache2 \
     apache2-utils \
     software-properties-common \
-    net-tools
 
 # Instalasi paket yang membutuhkan interaksi (misalnya, mysql-server dan phpmyadmin)
 apt-get install mysql-server phpmyadmin
