@@ -31,20 +31,15 @@ validate_input() {
     return 0
 }
 
-export DEBIAN_FRONTEND=noninteractive
-
-# Update dan install paket
+# Update dan install paket yang dibutuhkan
 apt-get update
-
-# Instalasi paket tanpa interaksi
 apt-get install -y \
     bind9 \
-    apache2 \
     apache2-utils \
     software-properties-common \
 
-# Instalasi paket yang membutuhkan interaksi (misalnya, mysql-server dan phpmyadmin)
-apt-get install mysql-server phpmyadmin
+apt-get install apache2 mysql-server phpmyadmin 
+
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
@@ -159,7 +154,8 @@ cat > /var/www/index.php <<EOL
 EOL
 
 echo "Menambahkan konfigurasi phpMyAdmin ke apache2.conf..."
-echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
+echo "Include /etc/phpmyadmin/apache.conf" | sudo tee -a /etc/apache2/apache2.conf
+
 
 # Aktifkan modul Apache
 a2ensite 000-default.conf
@@ -172,4 +168,4 @@ systemctl restart apache2 || true
 
 echo "==== Konfigurasi Selesai ===="
 echo "Domain: $user_domain"
-echo "IP: $user_ip"
+echo "IP: $user_ip"  
