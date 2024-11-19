@@ -45,7 +45,7 @@ apt-get install -y \
     net-tools
 
 # Aktifkan kembali interaksi untuk paket tertentu
-export DEBIAN_FRONTEND=dialog
+export DEBIAN_FRONTEND=readline
 
 # Instalasi paket yang membutuhkan interaksi (misalnya, mysql-server dan phpmyadmin)
 apt-get install -y mysql-server php phpmyadmin
