@@ -45,10 +45,10 @@ apt-get install -y \
     net-tools
 
 # Aktifkan kembali interaksi untuk paket tertentu
-export DEBIAN_FRONTEND=readline
+export DEBIAN_FRONTEND=interactive
 
 # Instalasi paket yang membutuhkan interaksi (misalnya, mysql-server dan phpmyadmin)
-apt-get install -y mysql-server php phpmyadmin
+apt-get install mysql-server php phpmyadmin
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
