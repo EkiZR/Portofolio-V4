@@ -16,7 +16,17 @@ validate_input() {
 
     case "$type" in
         "ip")
-            if ! [[ $input =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            if [[ $input =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+                # Validasi setiap oktet berada dalam rentang 0-255
+                IFS='.' read -r -a octets <<< "$input"
+                for octet in "${octets[@]}"; do
+                    if ((octet < 0 || octet > 255)); then
+                        echo "IP Address tidak valid. Setiap oktet harus antara 0-255"
+                        return 1
+                    fi
+                done
+                return 0
+            else
                 echo "IP Address tidak valid. Gunakan format seperti 192.168.1.1"
                 return 1
             fi
