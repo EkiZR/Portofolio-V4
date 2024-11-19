@@ -31,8 +31,10 @@ validate_input() {
     return 0
 }
 
-# Update dan install paket yang dibutuhkan
+# Update dan install paket
 apt-get update
+
+# Instalasi interaktif
 apt-get install -y \
     bind9 \
     apache2 \
@@ -156,8 +158,7 @@ cat > /var/www/index.php <<EOL
 EOL
 
 echo "Menambahkan konfigurasi phpMyAdmin ke apache2.conf..."
-echo "Include /etc/phpmyadmin/apache.conf" | sudo tee -a /etc/apache2/apache2.conf
-
+echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
 
 # Aktifkan modul Apache
 a2ensite 000-default.conf
