@@ -16,17 +16,7 @@ validate_input() {
 
     case "$type" in
         "ip")
-            if [[ $input =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
-                # Validasi setiap oktet berada dalam rentang 0-255
-                IFS='.' read -r -a octets <<< "$input"
-                for octet in "${octets[@]}"; do
-                    if ((octet < 0 || octet > 255)); then
-                        echo "IP Address tidak valid. Setiap oktet harus antara 0-255"
-                        return 1
-                    fi
-                done
-                return 0
-            else
+            if ! [[ $input =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
                 echo "IP Address tidak valid. Gunakan format seperti 192.168.1.1"
                 return 1
             fi
@@ -37,52 +27,23 @@ validate_input() {
                 return 1
             fi
             ;;
-        "password")
-            if [[ ${#input} -lt 8 ]]; then
-                echo "Password minimal 8 karakter"
-                return 1
-            fi
-            ;;
     esac
     return 0
 }
 
-# Update dan install paket yang dibutuhkan
+# Update dan install paket
 apt-get update
+
+# Instalasi interaktif
 apt-get install -y \
     bind9 \
+    apache2 \
+    mysql-server \
+    php \
+    phpmyadmin \
     apache2-utils \
     software-properties-common \
-    debconf-utils
-
-# Minta input dari pengguna
-while true; do
-    read -p "Masukkan IP address (contoh: 192.168.1.1): " user_ip
-    validate_input "$user_ip" "ip" && break
-done
-
-while true; do
-    read -p "Masukkan nama domain (contoh: smkeki.sch.id): " user_domain
-    validate_input "$user_domain" "domain" && break
-done
-
-# Minta input password dari pengguna
-while true; do
-    read -sp "Masukkan password MySQL/phpMyAdmin (minimal 8 karakter): " mysql_password
-    echo
-    validate_input "$mysql_password" "password" && break
-done
-
-# Noninteractive config untuk MySQL dan phpMyAdmin
-echo "mysql-server mysql-server/root_password password $mysql_password" | debconf-set-selections
-echo "mysql-server mysql-server/root_password_again password $mysql_password" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/reconfigure-webserver select apache2" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/mysql/app-pass password $mysql_password" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/app-password-confirm password $mysql_password" | debconf-set-selections
-
-# Install paket dengan mode noninteraktif
-DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 mysql-server phpmyadmin
+    net-tools
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
@@ -99,6 +60,17 @@ systemctl stop apt-daily.timer
 systemctl disable apt-daily.timer
 systemctl stop apt-daily-upgrade.timer
 systemctl disable apt-daily-upgrade.timer
+
+# Minta input dari pengguna
+while true; do
+    read -p "Masukkan IP address (contoh: 192.168.1.1): " user_ip
+    validate_input "$user_ip" "ip" && break
+done
+
+while true; do
+    read -p "Masukkan nama domain (contoh: smkeki.sch.id): " user_domain
+    validate_input "$user_domain" "domain" && break
+done
 
 # Konfigurasi DNS
 mkdir -p /etc/bind
@@ -186,7 +158,7 @@ cat > /var/www/index.php <<EOL
 EOL
 
 echo "Menambahkan konfigurasi phpMyAdmin ke apache2.conf..."
-echo "Include /etc/phpmyadmin/apache.conf" | sudo tee -a /etc/apache2/apache2.conf
+echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
 
 # Aktifkan modul Apache
 a2ensite 000-default.conf
@@ -200,4 +172,3 @@ systemctl restart apache2 || true
 echo "==== Konfigurasi Selesai ===="
 echo "Domain: $user_domain"
 echo "IP: $user_ip"
-echo "Password MySQL/phpMyAdmin telah diatur"
