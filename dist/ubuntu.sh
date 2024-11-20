@@ -44,7 +44,7 @@ apt-get install -y \
     mysql-server \
     apache2-utils
 
-sudo dpkg --confiure -a
+dpkg --configure -a || { echo "Gagal menjalankan dpkg --configure -a"; exit 1; }
 apt-get install phpmyadmin
 
 # Optimasi repository
