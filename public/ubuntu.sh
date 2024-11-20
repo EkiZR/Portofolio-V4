@@ -6,29 +6,15 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-# Minta input IP address dengan validasi tambahan
-while true; do
-    read -p "Masukkan IP address (contoh: 192.168.1.1): " user_ip
-    if [[ -z "$user_ip" ]]; then
-        echo "IP Address tidak boleh kosong. Silakan coba lagi."
-        continue
-    fi
-    if [[ $user_ip =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        break
-    else
-        echo "IP Address tidak valid. Gunakan format seperti 192.168.1.1"
-    fi
-done
+# Minta input IP dan domain
+read -p "Masukkan IP address (contoh: 192.168.1.1): " user_ip
+read -p "Masukkan nama domain (contoh: smkeki.sch.id): " user_domain
 
-
-while true; do
-    read -p "Masukkan nama domain (contoh: smkeki.sch.id): " user_domain
-    if [[ $user_domain =~ ^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
-        break
-    else
-        echo "Format domain tidak valid. Gunakan format seperti smkeki.sch.id"
-    fi
-done
+# Gunakan input langsung, tanpa validasi
+if [ -z "$user_ip" ] || [ -z "$user_domain" ]; then
+    echo "IP address dan domain tidak boleh kosong. Jalankan ulang script."
+    exit 1
+fi
 
 # Tambah repository universe
 add-apt-repository universe -y
