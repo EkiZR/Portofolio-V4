@@ -6,15 +6,20 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-# Minta input dari pengguna di awal
+# Minta input IP address dengan validasi tambahan
 while true; do
     read -p "Masukkan IP address (contoh: 192.168.1.1): " user_ip
+    if [[ -z "$user_ip" ]]; then
+        echo "IP Address tidak boleh kosong. Silakan coba lagi."
+        continue
+    fi
     if [[ $user_ip =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         break
     else
         echo "IP Address tidak valid. Gunakan format seperti 192.168.1.1"
     fi
 done
+
 
 while true; do
     read -p "Masukkan nama domain (contoh: smkeki.sch.id): " user_domain
