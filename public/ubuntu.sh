@@ -6,11 +6,28 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-# Minta input IP dan domain
-read -p "Masukkan IP address (contoh: 192.168.1.1): " user_ip
-read -p "Masukkan nama domain (contoh: smkeki.sch.id): " user_domain
+# Fungsi untuk membaca input dengan timeout
+get_input() {
+    local prompt="$1"
+    local default="$2"
+    local input
+    
+    # Gunakan /dev/tty untuk memastikan input bisa dibaca meski melalui pipe
+    exec < /dev/tty
+    read -p "$prompt" input
+    
+    if [ -z "$input" ] && [ ! -z "$default" ]; then
+        echo "$default"
+    else
+        echo "$input"
+    fi
+}
 
-# Gunakan input langsung, tanpa validasi
+# Minta input IP dan domain dengan cara yang lebih robust
+user_ip=$(get_input "Masukkan IP address (contoh: 192.168.1.1): ")
+user_domain=$(get_input "Masukkan nama domain (contoh: smkeki.sch.id): ")
+
+# Validasi input
 if [ -z "$user_ip" ] || [ -z "$user_domain" ]; then
     echo "IP address dan domain tidak boleh kosong. Jalankan ulang script."
     exit 1
@@ -57,15 +74,15 @@ EOL
 reversed_ip=$(echo "$user_ip" | awk -F. '{print $3"."$2"."$1}')
 
 cat > /etc/bind/named.conf.default-zones <<EOL
-zone "$user_domain" { 
-    type master; 
-    file "/etc/bind/smk.db"; 
-};
+zone "$user_domain" {
+     type master;
+     file "/etc/bind/smk.db";
+ };
 
-zone "$reversed_ip.in-addr.arpa" { 
-    type master; 
-    file "/etc/bind/smk.ip"; 
-};
+zone "$reversed_ip.in-addr.arpa" {
+     type master;
+     file "/etc/bind/smk.ip";
+ };
 EOL
 
 # Konfigurasi file zona
