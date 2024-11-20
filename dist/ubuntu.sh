@@ -27,9 +27,13 @@ get_input() {
 user_ip=$(get_input "Masukkan IP address (contoh: 192.168.1.1): ")
 user_domain=$(get_input "Masukkan nama domain (contoh: smkeki.sch.id): ")
 
+# Minta input untuk password MySQL dan phpMyAdmin
+mysql_root_password=$(get_input "Masukkan password untuk root MySQL: ")
+phpmyadmin_password=$(get_input "Masukkan password untuk phpMyAdmin: ")
+
 # Validasi input
-if [ -z "$user_ip" ] || [ -z "$user_domain" ]; then
-    echo "IP address dan domain tidak boleh kosong. Jalankan ulang script."
+if [ -z "$user_ip" ] || [ -z "$user_domain" ] || [ -z "$mysql_root_password" ] || [ -z "$phpmyadmin_password" ]; then
+    echo "IP address, domain, MySQL password, dan phpMyAdmin password tidak boleh kosong. Jalankan ulang script."
     exit 1
 fi
 
@@ -42,12 +46,22 @@ apt-get install -y \
     bind9 \
     apache2 \
     mysql-server \
-    apache2-utils
+    apache2-utils \
+    phpmyadmin
 
 export DEBIAN_FRONTEND=noninteractive
+
+# Set konfigurasi otomatis untuk MySQL dan phpMyAdmin
+echo "mysql-server mysql-server/root_password password $mysql_root_password" | debconf-set-selections
+echo "mysql-server mysql-server/root_password_again password $mysql_root_password" | debconf-set-selections
+echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
+echo "phpmyadmin phpmyadmin/mysql/admin-pass password $mysql_root_password" | debconf-set-selections
+echo "phpmyadmin phpmyadmin/mysql/app-pass password $phpmyadmin_password" | debconf-set-selections
+echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | debconf-set-selections
+
+# Install phpMyAdmin dan konfigurasikan dpkg
 apt-get install -y phpmyadmin
 dpkg --configure -a || { echo "Gagal menjalankan dpkg --configure -a"; exit 1; }
-
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
