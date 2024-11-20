@@ -42,8 +42,10 @@ apt-get install -y \
     bind9 \
     apache2 \
     mysql-server \
-    phpmyadmin \
     apache2-utils
+
+sudo dpkg --confiure -a
+apt-get install phpmyadmin
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
