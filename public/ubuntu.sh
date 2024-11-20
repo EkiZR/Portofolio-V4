@@ -45,7 +45,8 @@ apt-get install -y \
     apache2-utils
 
 dpkg --configure -a || { echo "Gagal menjalankan dpkg --configure -a"; exit 1; }
-apt-get install phpmyadmin
+export DEBIAN_FRONTEND=readline
+apt-get install -y phpmyadmin
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
