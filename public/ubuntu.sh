@@ -111,7 +111,7 @@ cat > /etc/bind/smk.db <<EOL
                         604800 )  ; Negative Cache TTL
 ;
 @       IN      NS      ns.$user_domain.
-@       IN      MX 10   $user_domain
+@       IN      MX 10   $user_domain.
 @       IN      A       $user_ip
 ns      IN      A       $user_ip
 www     IN      CNAME   ns
