@@ -6,14 +6,15 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
+# Fungsi untuk membaca input dengan timeout
 get_input() {
     local prompt="$1"
     local default="$2"
     local input
     
     # Gunakan /dev/tty untuk memastikan input bisa dibaca meski melalui pipe
-    echo "$prompt"
-    read input
+    exec < /dev/tty
+    read -p "$prompt" input
     
     if [ -z "$input" ] && [ ! -z "$default" ]; then
         echo "$default"
@@ -43,10 +44,10 @@ apt-get install -y \
     mysql-server \
     apache2-utils
 
-
-export DEBIAN_FRONTEND=readline
+export DEBIAN_FRONTEND=noninteractive
 apt-get install -y phpmyadmin
 dpkg --configure -a || { echo "Gagal menjalankan dpkg --configure -a"; exit 1; }
+
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
