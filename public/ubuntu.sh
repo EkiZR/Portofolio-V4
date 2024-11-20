@@ -61,7 +61,6 @@ echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | debconf
 
 # Install phpMyAdmin dan konfigurasikan dpkg
 apt-get install -y phpmyadmin
-dpkg --configure -a || { echo "Gagal menjalankan dpkg --configure -a"; exit 1; }
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
