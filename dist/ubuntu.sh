@@ -42,6 +42,15 @@ add-apt-repository universe -y
 
 # Update dan install paket penting
 export DEBIAN_FRONTEND=noninteractive
+
+# Set konfigurasi otomatis untuk MySQL dan phpMyAdmin
+echo "mysql-server mysql-server/root_password password $mysql_root_password" | debconf-set-selections
+echo "mysql-server mysql-server/root_password_again password $mysql_root_password" | debconf-set-selections
+echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
+echo "phpmyadmin phpmyadmin/mysql/admin-pass password $mysql_root_password" | debconf-set-selections
+echo "phpmyadmin phpmyadmin/mysql/app-pass password $phpmyadmin_password" | debconf-set-selections
+echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | debconf-set-selections
+
 apt-get update
 apt-get install -y \
     bind9 \
@@ -50,16 +59,6 @@ apt-get install -y \
     apache2-utils \
     phpmyadmin
 
-# Set konfigurasi otomatis untuk MySQL dan phpMyAdmin hanya satu kali
-echo "mysql-server mysql-server/root_password password $mysql_root_password" | debconf-set-selections
-echo "mysql-server mysql-server/root_password_again password $mysql_root_password" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/mysql/admin-pass password $mysql_root_password" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/mysql/app-pass password $phpmyadmin_password" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | debconf-set-selections
-
-# Pastikan phpMyAdmin terinstal dan dikonfigurasi
-# Tidak perlu menginstal phpMyAdmin lagi karena sudah dilakukan sebelumnya
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
