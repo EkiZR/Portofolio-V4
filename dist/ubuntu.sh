@@ -2,48 +2,40 @@
 
 # Pastikan script dijalankan sebagai root
 if [ "$(id -u)" != "0" ]; then
-   echo "Script harus dijalankan dengan sudo" 
-   exit 1
+    echo "Script harus dijalankan dengan sudo"
+    exit 1
 fi
+
+# Minta input dari pengguna di awal
+while true; do
+    read -p "Masukkan IP address (contoh: 192.168.1.1): " user_ip
+    if [[ $user_ip =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        break
+    else
+        echo "IP Address tidak valid. Gunakan format seperti 192.168.1.1"
+    fi
+done
+
+while true; do
+    read -p "Masukkan nama domain (contoh: smkeki.sch.id): " user_domain
+    if [[ $user_domain =~ ^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+        break
+    else
+        echo "Format domain tidak valid. Gunakan format seperti smkeki.sch.id"
+    fi
+done
 
 # Tambah repository universe
 add-apt-repository universe -y
 
-# Fungsi validasi input
-validate_input() {
-    local input="$1"
-    local type="$2"
-
-    case "$type" in
-        "ip")
-            if ! [[ $input =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-                echo "IP Address tidak valid. Gunakan format seperti 192.168.1.1"
-                return 1
-            fi
-            ;;
-        "domain")
-            if ! [[ $input =~ ^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
-                echo "Format domain tidak valid. Gunakan format seperti smkeki.sch.id"
-                return 1
-            fi
-            ;;
-    esac
-    return 0
-}
-
-# Update dan install paket
+# Update dan install paket penting
 apt-get update
-
-# Instalasi interaktif
 apt-get install -y \
     bind9 \
     apache2 \
     mysql-server \
-    php \
     phpmyadmin \
-    apache2-utils \
-    software-properties-common \
-    net-tools
+    apache2-utils
 
 # Optimasi repository
 sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
@@ -60,17 +52,6 @@ systemctl stop apt-daily.timer
 systemctl disable apt-daily.timer
 systemctl stop apt-daily-upgrade.timer
 systemctl disable apt-daily-upgrade.timer
-
-# Minta input dari pengguna
-while true; do
-    read -p "Masukkan IP address (contoh: 192.168.1.1): " user_ip
-    validate_input "$user_ip" "ip" && break
-done
-
-while true; do
-    read -p "Masukkan nama domain (contoh: smkeki.sch.id): " user_domain
-    validate_input "$user_domain" "domain" && break
-done
 
 # Konfigurasi DNS
 mkdir -p /etc/bind
