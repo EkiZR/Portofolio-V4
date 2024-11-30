@@ -23,6 +23,27 @@ get_input() {
     fi
 }
 
+# Periksa koneksi internet
+check_internet() {
+    echo "Memeriksa koneksi internet..."
+    if ! ping -c 4 8.8.8.8 &>/dev/null; then
+        echo "Tidak ada koneksi internet. Periksa jaringan Anda dan coba lagi."
+        exit 1
+    fi
+    echo "Koneksi internet OK."
+}
+
+# Perbaiki konfigurasi DNS
+fix_dns() {
+    echo "Memperbaiki konfigurasi DNS..."
+    echo -e "nameserver 8.8.8.8\nnameserver 8.8.4.4" > /etc/resolv.conf
+    echo "Konfigurasi DNS telah diperbaiki."
+}
+
+# Pastikan koneksi internet dan DNS sudah benar
+check_internet
+fix_dns
+
 # Minta input IP dan domain
 user_ip=$(get_input "Masukkan IP address (contoh: 192.168.1.1): ")
 user_domain=$(get_input "Masukkan nama domain (contoh: smkeki.sch.id): ")
@@ -71,18 +92,15 @@ EOL
 # Konfigurasi zona Bind9
 reversed_ip=$(echo "$user_ip" | awk -F. '{print $3"."$2"."$1}')
 
-# Menambahkan zona domain ke /etc/bind/named.conf.default-zones
 echo "zone \"$user_domain\" {
      type master;
      file \"/etc/bind/smk.db\";
  }" >> /etc/bind/named.conf.default-zones
 
-# Menambahkan zona reverse IP ke /etc/bind/named.conf.default-zones
 echo "zone \"$reversed_ip.in-addr.arpa\" {
      type master;
      file \"/etc/bind/smk.ip\";
  }" >> /etc/bind/named.conf.default-zones
-
 
 # Konfigurasi file zona
 cat > /etc/bind/smk.db <<EOL
@@ -105,7 +123,6 @@ ntp     IN      CNAME   ns
 proxy   IN      CNAME   ns
 EOL
 
-# Konfigurasi file PTR
 octet=$(echo "$user_ip" | awk -F. '{print $4}')
 cat > /etc/bind/smk.ip <<EOL
 @       IN      SOA     ns.$user_domain. root.$user_domain. (
@@ -120,21 +137,18 @@ $octet  IN      PTR     ns.$user_domain.
 EOL
 
 # Konfigurasi Apache
-mkdir -p /etc/apache2/sites-available
-mkdir -p /var/www
-
+mkdir -p /etc/apache2/sites-available /var/www
 cat > /etc/apache2/sites-available/000-default.conf <<EOL
 <VirtualHost $user_ip:80>
         ServerAdmin admin@$user_domain
         ServerName www.$user_domain
         DocumentRoot /var/www
-        ErrorLog ${APACHE_LOG_DIR}/error.log
+        ErrorLog \${APACHE_LOG_DIR}/error.log
         LogLevel warn
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
+        CustomLog \${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 EOL
 
-# Buat index.php
 cat > /var/www/index.php <<EOL
 <!DOCTYPE html>
 <html>
@@ -145,52 +159,24 @@ cat > /var/www/index.php <<EOL
 </html>
 EOL
 
-echo "Menambahkan konfigurasi phpMyAdmin ke apache2.conf..."
 echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
-
-# Aktifkan modul Apache
 a2ensite 000-default.conf
-a2enmod rewrite
-a2enmod ssl
+a2enmod rewrite ssl
 
-# Restart layanan
-systemctl restart bind9 || true
-systemctl restart apache2 || true
+systemctl restart bind9 apache2
 
-# Tambahkan instalasi dan konfigurasi Samba
-echo "Memulai instalasi Samba..."
-if ! apt-get install -y samba smbclient; then
-    echo "Gagal menginstal Samba. Pastikan repositori sudah benar dan jalankan ulang script."
-    exit 1
-fi
+# Instalasi Samba
+apt-get install -y samba smbclient
 
-# Buat direktori untuk share dan set izin
+# Konfigurasi Samba
 mkdir -p /var/www
 chmod -R 0777 /var/www
 
-# Tambahkan user Samba
-read -p "Masukkan username Samba (contoh: tamu): " samba_user
+samba_user=$(get_input "Masukkan username Samba (contoh: tamu): ")
 useradd -m "$samba_user"
+smbpasswd -a "$samba_user"
 
-if ! smbpasswd -a "$samba_user"; then
-    echo "Gagal menambahkan pengguna Samba. Periksa instalasi Samba."
-    exit 1
-fi
-
-# Konfigurasi file smb.conf
-smb_conf="/etc/samba/smb.conf"
-if [ ! -f "$smb_conf" ]; then
-    echo "File smb.conf tidak ditemukan, membuat file baru..."
-    touch "$smb_conf"
-    echo "[global]" >> "$smb_conf"
-    echo "workgroup = WORKGROUP" >> "$smb_conf"
-    echo "server string = %h server (Samba, Ubuntu)" >> "$smb_conf"
-    echo "dns proxy = no" >> "$smb_conf"
-fi
-
-if ! grep -q "\[www\]" "$smb_conf"; then
-    echo "Menambahkan konfigurasi Samba di akhir $smb_conf..."
-    cat >> "$smb_conf" <<EOL
+cat >> /etc/samba/smb.conf <<EOL
 
 [www]
    path = /var/www
@@ -201,16 +187,9 @@ if ! grep -q "\[www\]" "$smb_conf"; then
    create mask = 0777
    directory mask = 0777
 EOL
-fi
 
-# Restart layanan Samba
-if ! systemctl restart smbd nmbd; then
-    echo "Gagal me-restart layanan Samba. Pastikan Samba terinstal dengan benar."
-    exit 1
-fi
+systemctl restart smbd 
 
-echo "==== Konfigurasi Domain Selesai ===="
+echo "==== Konfigurasi Selesai ===="
 echo "Domain: $user_domain"
-echo "==== Konfigurasi Samba Selesai ===="
-echo "Direktori yang dapat diakses: /var/www"
-echo "Silakan gunakan username Samba ($samba_user) untuk mengakses share."
+echo "Samba share tersedia di /var/www. Gunakan $samba_user untuk mengakses."
