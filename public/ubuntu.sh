@@ -11,11 +11,11 @@ get_input() {
     local prompt="$1"
     local default="$2"
     local input
-
+    
     # Gunakan /dev/tty untuk memastikan input bisa dibaca meski melalui pipe
     exec < /dev/tty
     read -p "$prompt" input
-
+    
     if [ -z "$input" ] && [ ! -z "$default" ]; then
         echo "$default"
     else
@@ -23,28 +23,7 @@ get_input() {
     fi
 }
 
-# Periksa koneksi internet
-check_internet() {
-    echo "Memeriksa koneksi internet..."
-    if ! ping -c 4 8.8.8.8 &>/dev/null; then
-        echo "Tidak ada koneksi internet. Periksa jaringan Anda dan coba lagi."
-        exit 1
-    fi
-    echo "Koneksi internet OK."
-}
-
-# Perbaiki konfigurasi DNS
-fix_dns() {
-    echo "Memperbaiki konfigurasi DNS..."
-    echo -e "nameserver 8.8.8.8\nnameserver 8.8.4.4" > /etc/resolv.conf
-    echo "Konfigurasi DNS telah diperbaiki."
-}
-
-# Pastikan koneksi internet dan DNS sudah benar
-check_internet
-fix_dns
-
-# Minta input IP dan domain
+# Minta input IP dan domain dengan cara yang lebih robust
 user_ip=$(get_input "Masukkan IP address (contoh: 192.168.1.1): ")
 user_domain=$(get_input "Masukkan nama domain (contoh: smkeki.sch.id): ")
 
@@ -78,7 +57,24 @@ apt-get install -y \
     apache2 \
     mysql-server \
     apache2-utils \
-    phpmyadmin
+    phpmyadmin \
+    samba
+
+# Optimasi repository
+sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
+cat > /etc/apt/apt.conf.d/99optimize <<EOL
+Acquire::ForceHash "true";
+Acquire::CompressionTypes::Order:: "gz";
+APT::Get::Assume-Yes "true";
+APT::Install-Recommends "false";
+APT::Install-Suggests "false";
+EOL
+
+# Nonaktifkan update otomatis
+systemctl stop apt-daily.timer
+systemctl disable apt-daily.timer
+systemctl stop apt-daily-upgrade.timer
+systemctl disable apt-daily-upgrade.timer
 
 # Konfigurasi DNS
 mkdir -p /etc/bind
@@ -92,15 +88,39 @@ EOL
 # Konfigurasi zona Bind9
 reversed_ip=$(echo "$user_ip" | awk -F. '{print $3"."$2"."$1}')
 
-echo "zone \"$user_domain\" {
-     type master;
-     file \"/etc/bind/smk.db\";
- }" >> /etc/bind/named.conf.default-zones
+cat > /etc/bind/named.conf.default-zones <<EOL
+# Default zones
+zone "localhost" {
+    type master;
+    file "/etc/bind/db.local";
+};
 
-echo "zone \"$reversed_ip.in-addr.arpa\" {
+zone "127.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.127";
+};
+
+zone "0.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.0";
+};
+
+zone "255.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.255";
+};
+
+# Custom SMK zones
+zone "$user_domain" {
      type master;
-     file \"/etc/bind/smk.ip\";
- }" >> /etc/bind/named.conf.default-zones
+     file "/etc/bind/smk.db";
+ };
+
+zone "$reversed_ip.in-addr.arpa" {
+     type master;
+     file "/etc/bind/smk.ip";
+ };
+EOL
 
 # Konfigurasi file zona
 cat > /etc/bind/smk.db <<EOL
@@ -123,6 +143,7 @@ ntp     IN      CNAME   ns
 proxy   IN      CNAME   ns
 EOL
 
+# Konfigurasi file PTR
 octet=$(echo "$user_ip" | awk -F. '{print $4}')
 cat > /etc/bind/smk.ip <<EOL
 @       IN      SOA     ns.$user_domain. root.$user_domain. (
@@ -137,7 +158,9 @@ $octet  IN      PTR     ns.$user_domain.
 EOL
 
 # Konfigurasi Apache
-mkdir -p /etc/apache2/sites-available /var/www
+mkdir -p /etc/apache2/sites-available
+mkdir -p /var/www
+
 cat > /etc/apache2/sites-available/000-default.conf <<EOL
 <VirtualHost $user_ip:80>
         ServerAdmin admin@$user_domain
@@ -149,6 +172,7 @@ cat > /etc/apache2/sites-available/000-default.conf <<EOL
 </VirtualHost>
 EOL
 
+# Buat index.php
 cat > /var/www/index.php <<EOL
 <!DOCTYPE html>
 <html>
@@ -159,37 +183,37 @@ cat > /var/www/index.php <<EOL
 </html>
 EOL
 
-echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
-a2ensite 000-default.conf
-a2enmod rewrite ssl
+# Set izin akses untuk /var/www
+chmod 777 /var/www/ -R
 
-systemctl restart bind9 apache2
-
-# Instalasi Samba
-apt-get install -y samba smbclient
+# Tambah user Samba
+useradd tamu
+smbpasswd -a tamu
 
 # Konfigurasi Samba
-mkdir -p /var/www
-chmod -R 0777 /var/www
-
-samba_user=$(get_input "Masukkan username Samba (contoh: tamu): ")
-useradd -m "$samba_user"
-smbpasswd -a "$samba_user"
-
+cp /etc/samba/smb.conf /etc/samba/smb.conf.backup
 cat >> /etc/samba/smb.conf <<EOL
 
 [www]
-   path = /var/www
-   browsable = yes
-   writable = yes
-   guest ok = yes
-   read only = no
-   create mask = 0777
-   directory mask = 0777
+path = /var/www/
+browseable = yes
+writeable = yes
+valid users = tamu
+admin users = root
 EOL
 
-systemctl restart smbd 
+echo "Menambahkan konfigurasi phpMyAdmin ke apache2.conf..."
+echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
+
+# Aktifkan modul Apache
+a2ensite 000-default.conf
+a2enmod rewrite
+a2enmod ssl
+
+# Restart layanan
+systemctl restart bind9 || true
+systemctl restart apache2 || true
+systemctl restart smbd || true
 
 echo "==== Konfigurasi Selesai ===="
 echo "Domain: $user_domain"
-echo "Samba share tersedia di /var/www. Gunakan $samba_user untuk mengakses."
