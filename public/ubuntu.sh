@@ -11,11 +11,11 @@ get_input() {
     local prompt="$1"
     local default="$2"
     local input
-    
+
     # Gunakan /dev/tty untuk memastikan input bisa dibaca meski melalui pipe
     exec < /dev/tty
     read -p "$prompt" input
-    
+
     if [ -z "$input" ] && [ ! -z "$default" ]; then
         echo "$default"
     else
@@ -23,7 +23,7 @@ get_input() {
     fi
 }
 
-# Minta input IP dan domain dengan cara yang lebih robust
+# Minta input IP dan domain
 user_ip=$(get_input "Masukkan IP address (contoh: 192.168.1.1): ")
 user_domain=$(get_input "Masukkan nama domain (contoh: smkeki.sch.id): ")
 
@@ -59,23 +59,6 @@ apt-get install -y \
     apache2-utils \
     phpmyadmin
 
-
-# Optimasi repository
-sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
-cat > /etc/apt/apt.conf.d/99optimize <<EOL
-Acquire::ForceHash "true";
-Acquire::CompressionTypes::Order:: "gz";
-APT::Get::Assume-Yes "true";
-APT::Install-Recommends "false";
-APT::Install-Suggests "false";
-EOL
-
-# Nonaktifkan update otomatis
-systemctl stop apt-daily.timer
-systemctl disable apt-daily.timer
-systemctl stop apt-daily-upgrade.timer
-systemctl disable apt-daily-upgrade.timer
-
 # Konfigurasi DNS
 mkdir -p /etc/bind
 cat > /etc/resolv.conf <<EOL
@@ -88,17 +71,18 @@ EOL
 # Konfigurasi zona Bind9
 reversed_ip=$(echo "$user_ip" | awk -F. '{print $3"."$2"."$1}')
 
-cat > /etc/bind/named.conf.default-zones <<EOL
-zone "$user_domain" {
+# Menambahkan zona domain ke /etc/bind/named.conf.default-zones
+echo "zone \"$user_domain\" {
      type master;
-     file "/etc/bind/smk.db";
- };
+     file \"/etc/bind/smk.db\";
+ }" >> /etc/bind/named.conf.default-zones
 
-zone "$reversed_ip.in-addr.arpa" {
+# Menambahkan zona reverse IP ke /etc/bind/named.conf.default-zones
+echo "zone \"$reversed_ip.in-addr.arpa\" {
      type master;
-     file "/etc/bind/smk.ip";
- };
-EOL
+     file \"/etc/bind/smk.ip\";
+ }" >> /etc/bind/named.conf.default-zones
+
 
 # Konfigurasi file zona
 cat > /etc/bind/smk.db <<EOL
@@ -144,9 +128,9 @@ cat > /etc/apache2/sites-available/000-default.conf <<EOL
         ServerAdmin admin@$user_domain
         ServerName www.$user_domain
         DocumentRoot /var/www
-        ErrorLog \${APACHE_LOG_DIR}/error.log
+        ErrorLog ${APACHE_LOG_DIR}/error.log
         LogLevel warn
-        CustomLog \${APACHE_LOG_DIR}/access.log combined
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 EOL
 
@@ -173,5 +157,60 @@ a2enmod ssl
 systemctl restart bind9 || true
 systemctl restart apache2 || true
 
-echo "==== Konfigurasi Selesai ===="
+# Tambahkan instalasi dan konfigurasi Samba
+echo "Memulai instalasi Samba..."
+if ! apt-get install -y samba smbclient; then
+    echo "Gagal menginstal Samba. Pastikan repositori sudah benar dan jalankan ulang script."
+    exit 1
+fi
+
+# Buat direktori untuk share dan set izin
+mkdir -p /var/www
+chmod -R 0777 /var/www
+
+# Tambahkan user Samba
+read -p "Masukkan username Samba (contoh: tamu): " samba_user
+useradd -m "$samba_user"
+
+if ! smbpasswd -a "$samba_user"; then
+    echo "Gagal menambahkan pengguna Samba. Periksa instalasi Samba."
+    exit 1
+fi
+
+# Konfigurasi file smb.conf
+smb_conf="/etc/samba/smb.conf"
+if [ ! -f "$smb_conf" ]; then
+    echo "File smb.conf tidak ditemukan, membuat file baru..."
+    touch "$smb_conf"
+    echo "[global]" >> "$smb_conf"
+    echo "workgroup = WORKGROUP" >> "$smb_conf"
+    echo "server string = %h server (Samba, Ubuntu)" >> "$smb_conf"
+    echo "dns proxy = no" >> "$smb_conf"
+fi
+
+if ! grep -q "\[www\]" "$smb_conf"; then
+    echo "Menambahkan konfigurasi Samba di akhir $smb_conf..."
+    cat >> "$smb_conf" <<EOL
+
+[www]
+   path = /var/www
+   browsable = yes
+   writable = yes
+   guest ok = yes
+   read only = no
+   create mask = 0777
+   directory mask = 0777
+EOL
+fi
+
+# Restart layanan Samba
+if ! systemctl restart smbd nmbd; then
+    echo "Gagal me-restart layanan Samba. Pastikan Samba terinstal dengan benar."
+    exit 1
+fi
+
+echo "==== Konfigurasi Domain Selesai ===="
 echo "Domain: $user_domain"
+echo "==== Konfigurasi Samba Selesai ===="
+echo "Direktori yang dapat diakses: /var/www"
+echo "Silakan gunakan username Samba ($samba_user) untuk mengakses share."
