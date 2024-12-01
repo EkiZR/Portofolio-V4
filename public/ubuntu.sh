@@ -181,11 +181,14 @@ chmod 777 /var/www/ -R
 
 # Tambah user Samba
 useradd tamu
-smbpasswd -a tamu
 
-# Konfigurasi Samba
-cp /etc/samba/smb.conf /etc/samba/smb.conf.backup
-cat >> /etc/samba/smb.conf <<EOL
+# Tambah user Samba dengan cara interaktif
+echo "Tambah user Samba (username: tamu)"
+sudo smbpasswd -a tamu
+
+# Tambahkan konfigurasi Samba di akhir file tanpa menghapus konfigurasi eksisting
+if ! grep -q "\[www\]" /etc/samba/smb.conf; then
+    cat >> /etc/samba/smb.conf <<EOL
 
 [www]
 path = /var/www/
@@ -194,6 +197,7 @@ writeable = yes
 valid users = tamu
 admin users = root
 EOL
+fi
 
 echo "Menambahkan konfigurasi phpMyAdmin ke apache2.conf..."
 echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
