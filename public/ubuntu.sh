@@ -40,7 +40,7 @@ fi
 # Tambah repository universe
 add-apt-repository universe -y
 
-# Update dan install paket penting
+# Update dengan timeout dan error handling
 export DEBIAN_FRONTEND=noninteractive
 
 # Set konfigurasi otomatis untuk MySQL dan phpMyAdmin
@@ -51,29 +51,22 @@ echo "phpmyadmin phpmyadmin/mysql/admin-pass password $mysql_root_password" | de
 echo "phpmyadmin phpmyadmin/mysql/app-pass password $phpmyadmin_password" | debconf-set-selections
 echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | debconf-set-selections
 
-apt-get update
+# Perbaikan proses update
+apt-get clean
+apt-get update -y
+
+# Install paket dengan timeout dan error handling
 apt-get install -y \
     bind9 \
     apache2 \
     mysql-server \
     apache2-utils \
     phpmyadmin \
-    samba
+    samba \
+    || { echo "Instalasi paket gagal. Periksa koneksi internet dan repository."; exit 1; }
 
-# Optimasi repository
-sed -i 's|archive.ubuntu.com|mirror.its.ac.id|g' /etc/apt/sources.list
-cat > /etc/apt/apt.conf.d/99optimize <<EOL
-Acquire::ForceHash "true";
-Acquire::CompressionTypes::Order:: "gz";
-APT::Get::Assume-Yes "true";
-APT::Install-Recommends "false";
-APT::Install-Suggests "false";
-EOL
-
-# Nonaktifkan update otomatis
-systemctl stop apt-daily.timer
+# Nonaktifkan update otomatis dengan cara aman
 systemctl disable apt-daily.timer
-systemctl stop apt-daily-upgrade.timer
 systemctl disable apt-daily-upgrade.timer
 
 # Konfigurasi DNS
