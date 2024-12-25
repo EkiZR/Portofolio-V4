@@ -185,7 +185,6 @@ useradd tamu
 echo "Masukkan password untuk user tamu:"
 passwd tamu
 
-# Tambahkan konfigurasi Samba di akhir file
 # Backup file konfigurasi samba
 cp /etc/samba/smb.conf /etc/samba/smb.conf.backup
 
