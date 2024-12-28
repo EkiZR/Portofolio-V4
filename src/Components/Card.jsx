@@ -6,7 +6,7 @@ const CardProject = (props) => {
 
 	return (
 		<div className="card">
-			<div className="rounded-xl shadow-lg md:h-[27em] h-auto" id="Card">
+			<div className="rounded-xl shadow-lg md:h-[29rem] h-auto" id="Card">
 
 				<div className="p-5 flex flex-col h-full justify-between">
 					<div>

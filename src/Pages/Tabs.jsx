@@ -158,11 +158,18 @@ export default function FullWidthTabs() {
           <TabPanel value={value} index={0} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden ">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {(showAllProjects ? projects : projects.slice(0, 6)).map((project, index) => (
-                  <div key={index} data-aos="fade-up" data-aos-duration="1000">
-                    <CardProject Img={project.Img} Title={project.Title} Description={project.Description} Link={project.Link} />
-                  </div>
-                ))}
+              {(showAllProjects ? projects : projects.slice(0, 6)).map((project, index) => (
+  <div key={index} data-aos="fade-up" data-aos-duration="1000">
+    <CardProject
+      Img={project.Img}
+      Title={project.Title}
+      Description={
+        project.Description.split(".")[0] + "."
+      } // Ambil kalimat pertama saja
+      Link={project.Link}
+    />
+  </div>
+))}
               </div>
              
             </div>
